@@ -24,7 +24,7 @@ class FUNCovsdbtest:
         
         Startup sequence:
         cell <name>
-        onos-verity-cell
+        onos-verify-cell
         NOTE: temporary - onos-remove-raft-logs
         onos-uninstall
         start mininet
@@ -105,7 +105,7 @@ class FUNCovsdbtest:
         if PULLCODE and gitPullResult == main.TRUE:
             cleanInstallResult = main.ONOSbench.cleanInstall()
         else:
-            main.log.warm( "Did not pull new code so skipping mvn" +
+            main.log.warn( "Did not pull new code so skipping mvn" +
                            "clean install" )
             
         utilities.assert_equals( expect=main.TRUE,
@@ -124,8 +124,6 @@ class FUNCovsdbtest:
         utilities.assert_equals( expect=main.TRUE, actual=onosInstallResult,
                                  onpass="ONOS install successful",
                                  onfail="ONOS install failed" )
-        import time
-        time.sleep(20)
         main.step( "Checking if ONOS is up yet" )
         print main.nodes[0].ip_address
         for i in range( 2 ):
@@ -190,10 +188,10 @@ class FUNCovsdbtest:
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE
-        main.step( "Check onoscli ovsdb-node have node " + str(MN1IP))
+        main.step( "Check onoscli ovsdb-node have node " + str(MN1Ip))
         response = main.ONOScli1.getOvsdbNode()
         print("Response is " + str(response))
-        if re.search(MN1IP, response):
+        if re.search(MN1Ip, response):
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE
@@ -210,10 +208,10 @@ class FUNCovsdbtest:
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE
-        main.step( "Check onoscli ovsdb-node delete node " + str(MN1IP))
+        main.step( "Check onoscli ovsdb-node delete node " + str(MN1Ip))
         response = main.ONOScli1.getOvsdbNode()
         print("Response is " + str(response))
-        if not re.search(MN1IP, response):
+        if not re.search(MN1Ip, response):
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE

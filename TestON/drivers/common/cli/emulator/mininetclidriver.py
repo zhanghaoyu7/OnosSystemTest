@@ -2518,7 +2518,7 @@ class MininetCliDriver( Emulator ):
             The output of the command from the linux
             or main.FALSE on timeout
         """
-        command= "sudo ovs-vsctl list-ports" + str(sw)
+        command= "sudo ovs-vsctl list-ports " + str(sw)
         try:
             response = self.execute(
                 cmd=command,
