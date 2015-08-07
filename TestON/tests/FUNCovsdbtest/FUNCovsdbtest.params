@@ -1,0 +1,39 @@
+<PARAMS>
+    # CASE - Description
+    # 1 - Compile ONOS and push it to the test machines
+    # 2 - Test ovsdb connection and tearDown
+    # 3 - Test default br-int configuration and vxlan port
+
+    <testcases>1,2,3</testcases>
+
+    <DEPENDENCY>
+        <path>/tests/FUNCovsdbtest/Dependency/</path>
+    </DEPENDENCY>
+
+    <ENV>
+        <cellName>singlenode</cellName>
+        <cellApps>drivers,openflow,proxyarp,mobility</cellApps>
+    </ENV>
+    
+    <CTRL>
+        <ip1>192.168.56.101</ip1>
+        <port1>6633</port1>
+        <ovsdbport>6640</ovsdbport>
+    </CTRL>
+    
+    <HTTP>
+        <port>False</port>
+        <path>/onos/vtn</path>
+    </HTTP>
+    
+    <GIT>
+        <pull>False</pull>
+        <branch>master</branch>
+    </GIT>
+
+    <MN>
+        <ip1>192.168.56.100</ip1>
+        <ip2>192.168.56.101</ip2>
+    </MN>
+
+</PARAMS>
