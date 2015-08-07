@@ -3835,6 +3835,7 @@ class OnosCliDriver( CLI ):
             main.log.exception( self.name + ": Uncaught exception!" )
             main.cleanup()
             main.exit()
+
     def getOvsdbNode( self, jsonFormat=True ):
         """
         Uses 'ovsdb-node' function to obtain list of all ovsdb-nodes

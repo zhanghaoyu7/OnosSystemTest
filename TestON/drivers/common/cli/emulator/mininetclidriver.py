@@ -2448,91 +2448,6 @@ class MininetCliDriver( Emulator ):
             main.log.error( self.name + ":     " + self.handle.before )
             main.cleanup()
             main.exit()
-    def setManager( self,ip ,port ):
-        command= "sudo ovs-vsctl set-manager tcp:" + str(ip) + ":" + str(port)
-        try:
-            response = self.execute(
-                cmd=command,
-                prompt='\$',
-                timeout=10 )
-            return response
-        except pexpect.EOF:
-            main.log.error( self.name + ": EOF exception found" )
-            main.log.error( self.name + ":     " + self.handle.before )
-            main.cleanup()
-            main.exit()
-    def delManager( self):
-        command= "sudo ovs-vsctl del-manager"
-        try:
-            response = self.execute(
-                cmd=command,
-                prompt='\$',
-                timeout=10 )
-            return response
-        except pexpect.EOF:
-            main.log.error( self.name + ": EOF exception found" )
-            main.log.error( self.name + ":     " + self.handle.before )
-            main.cleanup()
-            main.exit()
-    def getManager(self):
-        command= "sudo ovs-vsctl get-manager"
-        try:
-            response = self.execute(
-                cmd=command,
-                prompt='\$',
-                timeout=10 )
-            return response
-        except pexpect.EOF:
-            main.log.error( self.name + ": EOF exception found" )
-            main.log.error( self.name + ":     " + self.handle.before )
-            main.cleanup()
-            main.exit()
-    def listBr(self):
-        """
-        Parameters:
-            none
-        Return:
-            The output of the command from the linux
-            or main.FALSE on timeout
-        """
-        command= "sudo ovs-vsctl list-br"
-        try:
-            response = self.execute(
-                cmd=command,
-                prompt='\$',
-                timeout=10 )
-            if response:
-                return response
-            else:
-                return main.FALSE
-        except pexpect.EOF:
-            main.log.error( self.name + ": EOF exception found" )
-            main.log.error( self.name + ":     " + self.handle.before )
-            main.cleanup()
-            main.exit()
-    def listPorts(self ,sw):
-        """
-        Parameters:
-            sw: The name of an OVS switch. Example "s1"
-        Return:
-            The output of the command from the linux
-            or main.FALSE on timeout
-        """
-        command= "sudo ovs-vsctl list-ports " + str(sw)
-        try:
-            response = self.execute(
-                cmd=command,
-                prompt='\$',
-                timeout=10 )
-            if response:
-                return response
-            else:
-                return main.FALSE
-        except pexpect.EOF:
-            main.log.error( self.name + ": EOF exception found" )
-            main.log.error( self.name + ":     " + self.handle.before )
-            main.cleanup()
-            main.exit()
 
     def assignVLAN( self, host, intf, vlan ):
         """
@@ -2587,6 +2502,96 @@ class MininetCliDriver( Emulator ):
                 main.log.error( self.name + ": EOF exception found" )
                 main.log.error( self.name + ":     " + self.handle.before )
                 return main.FALSE
+
+    def setManager( self,ip ,port ):
+        command= "sudo ovs-vsctl set-manager tcp:" + str(ip) + ":" + str(port)
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt='\$',
+                timeout=10 )
+            return response
+        except pexpect.EOF:
+            main.log.error( self.name + ": EOF exception found" )
+            main.log.error( self.name + ":     " + self.handle.before )
+            main.cleanup()
+            main.exit()
+
+    def delManager( self):
+        command= "sudo ovs-vsctl del-manager"
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt='\$',
+                timeout=10 )
+            return response
+        except pexpect.EOF:
+            main.log.error( self.name + ": EOF exception found" )
+            main.log.error( self.name + ":     " + self.handle.before )
+            main.cleanup()
+            main.exit()
+
+    def getManager(self):
+        command= "sudo ovs-vsctl get-manager"
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt='\$',
+                timeout=10 )
+            return response
+        except pexpect.EOF:
+            main.log.error( self.name + ": EOF exception found" )
+            main.log.error( self.name + ":     " + self.handle.before )
+            main.cleanup()
+            main.exit()
+
+    def listBr(self):
+        """
+        Parameters:
+            none
+        Return:
+            The output of the command from the linux
+            or main.FALSE on timeout
+        """
+        command= "sudo ovs-vsctl list-br"
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt='\$',
+                timeout=10 )
+            if response:
+                return response
+            else:
+                return main.FALSE
+        except pexpect.EOF:
+            main.log.error( self.name + ": EOF exception found" )
+            main.log.error( self.name + ":     " + self.handle.before )
+            main.cleanup()
+            main.exit()
+
+    def listPorts(self ,sw):
+        """
+        Parameters:
+            sw: The name of an OVS switch. Example "s1"
+        Return:
+            The output of the command from the linux
+            or main.FALSE on timeout
+        """
+        command= "sudo ovs-vsctl list-ports " + str(sw)
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt='\$',
+                timeout=10 )
+            if response:
+                return response
+            else:
+                return main.FALSE
+        except pexpect.EOF:
+            main.log.error( self.name + ": EOF exception found" )
+            main.log.error( self.name + ":     " + self.handle.before )
+            main.cleanup()
+            main.exit()
 
 if __name__ != "__main__":
     import sys

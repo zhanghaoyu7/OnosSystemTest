@@ -19,8 +19,8 @@
             <connect_order>2</connect_order>
             <COMPONENTS> </COMPONENTS>
         </ONOScli1>
-        
-         <ONOS1>
+
+        <ONOS1>
             <host>OC1</host>
             <user>onos</user>
             <password>huawei</password>
@@ -28,6 +28,7 @@
             <connect_order>3</connect_order>
             <COMPONENTS> </COMPONENTS>
         </ONOS1>
+
         <ONOSrest>
             <host>OC1</host>
             <user>onos</user>
@@ -45,7 +46,7 @@
             <connect_order>5</connect_order>
             <COMPONENTS> </COMPONENTS>
         </Mininet1>
-        
+
         <Mininet2>
             <host>OC1</host>
             <user>onos</user>
