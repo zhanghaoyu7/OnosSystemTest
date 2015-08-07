@@ -3835,3 +3835,29 @@ class OnosCliDriver( CLI ):
             main.log.exception( self.name + ": Uncaught exception!" )
             main.cleanup()
             main.exit()
+    def getOvsNode( self, jsonFormat=True ):
+        """
+        Uses 'ovsdb-node' function to obtain list of all ovsdb-nodes
+        Optional argument:
+            * jsonFormat - boolean indicating if you want output in json
+        Returns:
+            list of ovsdb-node
+        """
+        try:
+            cmdStr = "ovsdb-node"
+            if jsonFormat:
+                cmdStr += " -j"
+            handle = self.sendline( cmdStr )
+            return handle
+        except TypeError:
+            main.log.exception( self.name + ": Object not as expected" )
+            return None
+        except pexpect.EOF:
+            main.log.error( self.name + ": EOF exception found" )
+            main.log.error( self.name + ":    " + self.handle.before )
+            main.cleanup()
+            main.exit()
+        except Exception:
+            main.log.exception( self.name + ": Uncaught exception!" )
+            main.cleanup()
+            main.exit()
