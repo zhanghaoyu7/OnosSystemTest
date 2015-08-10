@@ -3862,3 +3862,108 @@ class OnosCliDriver( CLI ):
             main.log.exception( self.name + ": Uncaught exception!" )
             main.cleanup()
             main.exit()
+    
+    def networks(self, jsonFormat=True):
+        """
+        Lists all networks
+        Optional argument:
+            * jsonFormat - boolean indicating if you want output in json
+        """
+        try:
+            cmdStr = "networks"
+            if jsonFormat:
+                cmdStr += " -j"
+            handle = self.sendline(cmdStr)
+            return handle
+        except TypeError:
+            main.log.exception(self.name + ": Object not as expected")
+            return None
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":    " + self.handle.before)
+            main.cleanup()
+            main.exit()
+        except Exception:
+            main.log.exception(self.name + ": Uncaught exception!")
+            main.cleanup()
+            main.exit()
+    def subnets(self, jsonFormat=True):
+        """
+        Lists all subnets
+        Optional argument:
+            * jsonFormat - boolean indicating if you want output in json
+        """
+        try:
+            cmdStr = "subnets"
+            if jsonFormat:
+                cmdStr += " -j"
+            handle = self.sendline(cmdStr)
+            return handle
+        except TypeError:
+            main.log.exception(self.name + ": Object not as expected")
+            return None
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":    " + self.handle.before)
+            main.cleanup()
+            main.exit()
+        except Exception:
+            main.log.exception(self.name + ": Uncaught exception!")
+            main.cleanup()
+            main.exit()
+    def ports(self, jsonFormat=True):
+        """
+        Lists all ports
+        Optional argument:
+            * jsonFormat - boolean indicating if you want output in json
+        """
+        try:
+            cmdStr = "ports"
+            if jsonFormat:
+                cmdStr += " -j"
+            handle = self.sendline(cmdStr)
+            return handle
+        except TypeError:
+            main.log.exception(self.name + ": Object not as expected")
+            return None
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":    " + self.handle.before)
+            main.cleanup()
+            main.exit()
+        except Exception:
+            main.log.exception(self.name + ": Uncaught exception!")
+            main.cleanup()
+            main.exit()
+    def getNetwork(self, dpid=None):
+        """
+        Return the first device from the devices api whose 'id' contains 'dpid'
+        Return None if there is no match
+        """
+        try:
+            if dpid is None:
+                return None
+            else:
+                dpid = dpid.replace(':', '')
+                rawDevices = self.devices()
+                devicesJson = json.loads(rawDevices)
+                # search json for the device with dpid then return the device
+                for device in devicesJson:
+                    # print "%s in %s?" % ( dpid, device[ 'id' ] )
+                    if dpid in device[ 'd']:
+                        return device
+            return None
+        except TypeError:
+            main.log.exception(self.name + ": Object not as expected")
+            return None
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":    " + self.handle.before)
+            main.cleanup()
+            main.exit()
+        except Exception:
+            main.log.exception(self.name + ": Uncaught exception!")
+            main.cleanup()
+            main.exit()
+    
+    

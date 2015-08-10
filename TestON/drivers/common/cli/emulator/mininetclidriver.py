@@ -2593,6 +2593,157 @@ class MininetCliDriver( Emulator ):
             main.cleanup()
             main.exit()
 
+    def getController(self, sw):
+        """
+        Parameters:
+            sw: The name of an OVS switch. Example "s1"
+        Return:
+            The output of the command from the mininet cli
+            or main.FALSE on timeout"""
+        command = "sudo ovs-vsctl get-controller " + str(sw)
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt="\$",
+                timeout=10)
+            if response:
+                return response
+            else:
+                return main.FALSE
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":     " + self.handle.before)
+            main.cleanup()
+            main.exit()
+    def ovsShow(self):
+        """
+        Parameters:
+            none
+        Return:
+            The output of the command from the linux
+            or main.FALSE on timeout"""
+        command = "sudo ovs-vsctl show "
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt="\$",
+                timeout=10)
+            if response:
+                return response
+            else:
+                return main.FALSE
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found" )
+            main.log.error(self.name + ":     " + self.handle.before)
+            main.cleanup()
+            main.exit()
+    def dumpFlows(self ,sw ,protocols=None):
+        """
+        Parameters:
+            sw: The name of an OVS switch. Example "s1"
+        Return:
+            The output of the command from the linux
+            or main.FALSE on timeout"""
+        if protocols:
+            command = "sudo ovs-ofctl -O " + \
+                protocols + " dump-flows " + str(sw)
+        else:
+            command = "sudo ovs-ofctl dump-flows " + str(sw)
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt="\$",
+                timeout=10 )
+            if response:
+                return response
+            else:
+                return main.FALSE
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":     " + self.handle.before)
+            main.cleanup()
+            main.exit()
+    def createHost(self, hostname):
+        command = "sudo ip netns add " + str(hostname)
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt="\$",
+                timeout=10)
+            return response
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":     " + self.handle.before)
+            main.cleanup()
+            main.exit()
+    def createHostport(self, hostname="host1" ,hostport="host1-eth0" ,ovsport="port1" , hostportmac="000000000001"):
+        command = "sudo ip link add " + str(hostport) +" type veth peer name " + str(ovsport)
+        command += ";" +" sudo ifconfig " + str(hostport) + " hw ether " + str(hostportmac)
+        command += ";" +" sudo ip link set " + str(hostport) + " netns " + str(hostname) 
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt="\$",
+                timeout=10)
+            return response
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":     " + self.handle.before)
+            main.cleanup()
+            main.exit()
+    def addPortToOvs(self,ifaceId,attachedMac,vmuuid,port="port1",ovsname="br-int"):
+        command = "sudo ovs-vsctl add-port " + str(ovsname) +" " + str(port)
+        if ifaceId:
+            command += " -- set Interface " + str(port) + " external-ids:iface-id=" + str(ifaceId) + " external-ids:iface-status=active"
+        if attachedMac:
+            command += " external-ids:attached-mac=" + str(attachedMac)
+        if vmuuid:
+            command += " external-ids:vm-uuid=" + str(vmuuid)
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt="\$",
+                timeout=10)
+            return response
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":     " + self.handle.before)
+            main.cleanup()
+            main.exit()
+    def setHostportIp(self ,ip,hostname="host1" ,hostport1="host1-eth0"):
+        command = "sudo ip netns exec " + str(hostname) +" ifconfig " + str(hostport1) + " " + str(ip)
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt="\$",
+                timeout=10)
+            return response
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":     " + self.handle.before)
+            main.cleanup()
+            main.exit()
+    def hostPing(self,src ,target ,hostname="host1"):
+        if src:
+            command = "sudo ip netns exec " + str(hostname) +" ping -c 1 -S " + str(src) +" " + str(target)
+        else:
+            command = "sudo ip netns exec " + str(hostname) +" ping -c 1 " + str(target)
+        try:
+            response = self.execute(
+                cmd=command,
+                prompt="\$",
+                timeout=10)
+            if re.search(',\s0\%\spacket\sloss', response):
+                main.log.info(self.name + ": no packets lost, host is reachable")
+                return main.TRUE
+            else:
+                return main.FALSE
+        except pexpect.EOF:
+            main.log.error(self.name + ": EOF exception found")
+            main.log.error(self.name + ":     " + self.handle.before)
+            main.cleanup()
+            main.exit()
+
 if __name__ != "__main__":
     import sys
     sys.modules[ __name__ ] = MininetCliDriver()

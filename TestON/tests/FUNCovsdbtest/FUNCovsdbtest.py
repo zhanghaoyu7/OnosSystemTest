@@ -315,3 +315,252 @@ class FUNCovsdbtest:
                                  str(ctrlip),
                                  onfail="Failed to set default br-int configuration and vxlan port " +\
                                  str(ctrlip))        
+
+    def CASE4( self, main ):
+        import re
+        import time
+        import os,sys
+        """
+        Test default openflow configuration
+        """
+        ctrlip = main.params['CTRL']['ip1']
+        ovsdbport = main.params['CTRL']['ovsdbport']
+        main.step( "ovsdb node 1 set ovs manager to " + str(ctrlip))
+        assignResult = main.Mininet1.setManager(ip=ctrlip,port=ovsdbport)
+        if not assignResult:
+            main.cleanup()
+            main.exit()
+        time.sleep(2)
+        main.step( "ovsdb node 2 set ovs manager to " + str(ctrlip))
+        assignResult = main.Mininet2.setManager(ip=ctrlip,port=ovsdbport)
+        if not assignResult:
+            main.cleanup()
+            main.exit()
+        time.sleep(2)
+        main.step( "Check ovsdb node 1 manager is " + str(ctrlip))
+        response = main.Mininet1.getManager()
+        print("Response is "+ str(response))
+        if re.search(ctrlip, response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+        main.step( "Check ovsdb node 2 manager is " + str(ctrlip))
+        response = main.Mininet2.getManager()
+        print("Response is "+ str(response))
+        if re.search(ctrlip, response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+        main.step( "Check ovsdb node 1 bridge br-int controller set to " + str(ctrlip))
+        response = main.Mininet1.getController("br-int")
+        print("Response is "+ str(response))
+        if re.search(ctrlip, response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+        main.step( "Check ovsdb node 2 bridge br-int controller set to  " + str(ctrlip))
+        response = main.Mininet2.getController("br-int")
+        print("Response is "+ str(response))
+        if re.search(ctrlip, response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+            
+        main.step( "Check onoscli devices have ovs " + str(MN1Ip))
+        response = main.ONOScli1.devices()
+        print("Response is "+ str(response))
+        if re.search(MN1Ip, response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+        main.step( "Check onoscli devices have ovs " + str(MN2Ip))
+        response = main.ONOScli1.devices()
+        print("Response is "+ str(response))
+        if re.search(MN2Ip, response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+        stepResult=assignResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Successfully set default openflow configuration " +
+                                        str(ctrlip),
+                                 onfail="Failed to set default openflow configuration " +
+                                        str(ctrlip))  
+    def CASE5( self, main ):
+        import re
+        import time
+        import os,sys
+        """
+        Test default flows
+        """
+        ctrlip = main.params['CTRL']['ip1']
+        ovsdbport = main.params['CTRL']['ovsdbport']
+        main.step( "ovsdb node 1 set ovs manager to onos" )
+        assignResult = main.Mininet1.setManager(ip=ctrlip,port=ovsdbport)
+        if not assignResult:
+            main.cleanup()
+            main.exit()
+        time.sleep(2)
+        main.step( "Check ovsdb node 1 manager is " + str(ctrlip))
+        response = main.Mininet1.getManager()
+        print("Response is "+ str(response))
+        if re.search(ctrlip, response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+        main.step( "Check ovsdb node 1 bridge br-int default flows on " + str(MN1Ip))
+        response = main.Mininet1.dumpFlows(sw="br-int",protocols="OpenFlow13")
+        print("Response is "+ str(response))    
+        if re.search("cookie", response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+        stepResult=assignResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Successfully set default flows " +
+                                        str(ctrlip),
+                                 onfail="Failed to set default flows " +
+                                        str(ctrlip))
+    def CASE6( self, main ):
+        """
+        Configure Network Subnet Port And Check On ONOS
+        """
+        import os,sys
+        sys.path.append("..")
+        from tests.FUNCovsdbtest.dependencies.Nbdata import NetworkData
+        from tests.FUNCovsdbtest.dependencies.Nbdata import SubnetkData
+        from tests.FUNCovsdbtest.dependencies.Nbdata import VirtualPortData
+        
+        ctrlip = main.params['CTRL']['ip1']
+        port = main.params['HTTP']['port']
+        path = main.params['HTTP']['path']
+        
+        main.step( "Generate Post Data" )
+        network = NetworkData
+        network.id = '030d6d3d-fa36-45bf-ae2b-4f4bc43a54dc'
+        network.tenant_id = '26cd996094344a0598b0a1af1d525cdc'
+        subnet = SubnetkData()
+        subnet.id = 'e44bd655-e22c-4aeb-b1e9-ea1606875178'
+        subnet.tenant_id = network.tenant_id
+        subnet.network_id = network_id
+        virtualport = VirtualPortData()
+        virtualport.id = '9352e05c-58b8-4f2c-b3df-c20624e22d44'
+        virtualport.subnetId =subnet.id
+        virtualport.tenant_id = network.tenant_id
+        virtualport.network_id = network_id
+        
+        networkpostdata = network.DictoJson()
+        subnetkpostdata = subnet.DictoJson()
+        virtualportpostdata = virtualport.DictoJson()
+        
+        main.step( "Post Network Data via HTTP(post port need post network)" )
+        Poststatus, result = main.ONOSrest.send(ctrlip,port,'',path+'networks/','POST',None,networkpostdata)
+        utilities.assert_equals(
+                expect='200',
+                actual=Poststatus,
+                onpass="Post Network Success ",
+                onfail="Post Network Failed " + str(Poststatus)+str(result))
+        
+        main.step( "Post Subnet Data via HTTP(post port need post network)" )
+        Poststatus, result = main.ONOSrest.send(ctrlip,port,'',path+'subnets/','POST',None,subnetpostdata)
+        utilities.assert_equals(
+                expect='202',
+                actual=Poststatus,
+                onpass="Post Subnet Success ",
+                onfail="Post Subnet Failed " + str(Poststatus)+str(result))
+        
+        main.step( "Post VirtualPort Data via HTTP" )
+        Poststatus, result = main.ONOSrest.send(ctrlip,port,'',path+'virtualports/','POST',None,virtualportpostdata)
+        utilities.assert_equals(
+                expect='200',
+                actual=Poststatus,
+                onpass="Post VirtualPort Success ",
+                onfail="Post VirtualPort Failed " + str(Poststatus)+str(result))
+    def CASE7( self, main ):
+        import re
+        import time
+        import os,sys
+        """
+        Test host go online and ping each other
+        """
+        ctrlip = main.params['CTRL']['ip1']
+        ovsdbport = main.params['CTRL']['ovsdbport']
+        MN1Ip = main.params['MN']['ip1']
+        MN2Ip = main.params['MN']['ip2']
+        main.step( "ovsdb node 1 set ovs manager to " + str(ctrlip))
+        assignResult = main.Mininet1.setManager(ip=ctrlip,port=ovsdbport)
+        if not assignResult:
+            main.cleanup()
+            main.exit()
+        time.sleep(2)
+        main.step( "ovsdb node 2 set ovs manager to " + str(ctrlip))
+        assignResult = main.Mininet2.setManager(ip=ctrlip,port=ovsdbport)
+        if not assignResult:
+            main.cleanup()
+            main.exit()
+        time.sleep(2)
+        
+        main.step( "Create host1 on node 1 " + str (MN1Ip))
+        assignResult = main.Mininet1.createHost(hostname="host1")
+        if not assignResult:
+            main.cleanup()
+            main.exit()
+        time.sleep(2)
+       
+        main.step( "Create host2 on node 2 " + str (MN2Ip))
+        assignResult = main.Mininet2.createHost(hostname="host2")
+        if not assignResult:
+            main.cleanup()
+            main.exit()
+        time.sleep(2)
+        
+        main.step( "Create port on host1 on the node " + str (MN1Ip))
+        assignResult = main.Mininet1.createHostport(hostname="host1",hostport="host1-eth0",hostportmac="000000000001")
+        if not assignResult:
+            main.cleanup()
+            main.exit()
+        main.step( "Create port on host2 on the node " + str (MN2Ip))
+        assignResult = main.Mininet2.createHostport(hostname="host2",hostport="host2-eth0",hostportmac="000000000002")
+        if not assignResult:
+            main.cleanup()
+            main.exit()    
+            
+        main.step( "add port to ovs br-int and host go-online on the node " + str (MN1Ip))
+        assignResult = main.Mininet1. addPortToOvs(ovsname="br-int",ifaceId="host1-eth0",attachedMac="000000000001")
+        if not assignResult:
+            main.cleanup()
+            main.exit() 
+        main.step( "add port to ovs br-int and host go-online on the node " + str (MN2Ip))
+        assignResult = main.Mininet1. addPortToOvs(ovsname="br-int",ifaceId="host2-eth0",attachedMac="000000000002")
+        if not assignResult:
+            main.cleanup()
+            main.exit()
+        main.step( "Check onos set host flows on the node " + str(MN1Ip))
+        response = main.Mininet1.dumpFlows(sw="br-int",protocols="OpenFlow13")
+        print("Response is " + str(response))    
+        if re.search("cookie", response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+        main.step( "Check onos set host flows on the node " + str(MN2Ip))
+        response = main.Mininet2.dumpFlows(sw="br-int",protocols="OpenFlow13")
+        print("Response is " + str(response))    
+        if re.search("cookie", response):
+            assignResult = assignResult and main.TRUE
+        else:
+            assignResult = main.FALSE
+            
+        main.step( "Check hosts can ping each other" )
+        main.Mininet1.setHostportIp(hostname="host1" , hostport1="host1-eth0" , ip="10.0.0.1")
+        main.Mininet1.setHostportIp(hostname="host2" , hostport1="host2-eth0" ,ip="10.0.0.2")
+        pingResult1 = main.Mininet1.hostPing(src="10.0.0.1" ,hostname="host1" ,target="10.0.0.2" )
+        pingResult2 = main.Mininet2.hostPing(src="10.0.0.2" ,hostname="host2" ,target="10.0.0.1" )
+        stepResult = assignResult and pingResult1 and pingResult2
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Successfully host go online and ping each other,controller is " +
+                                        str(ctrlip),
+                                 onfail="Failed to host go online and ping each other,controller is " +
+                                        str(ctrlip))
