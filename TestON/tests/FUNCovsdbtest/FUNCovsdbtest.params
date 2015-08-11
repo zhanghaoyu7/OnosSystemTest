@@ -31,9 +31,9 @@
         <branch>master</branch>
     </GIT>
 
-    <MN>
+    <OVSDB>
         <ip1>OCN</ip1>
         <ip2>OC1</ip2>
-    </MN>
+    </OVSDB>
 
 </PARAMS>
