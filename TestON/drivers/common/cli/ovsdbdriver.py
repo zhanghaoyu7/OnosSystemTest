@@ -25,6 +25,51 @@ class OvsdbDriver( CLI ):
         self.home = None
         self.handle = None
         super( CLI, self ).__init__()
+
+    def connect(self, **connectargs ):
+        try:
+            for key in connectargs:
+                vars( self)[ key ] = connectargs[ key ]
+
+            self.name = self.options[ 'name' ]
+            if os.getenv( str( self.ip_address ) ) != None:
+                self.ip_address = os.getenv(str (self.ip_address ) )
+            else:
+                main.log.info( self.name + ": Trying to connect to " +
+                               self.ip_address )
+            self.handle = super( OvsdbDriver, self ).connect(
+                    user_name=self.user_name,
+                    ip_address=self.ip_address,
+                    port=self.port,
+                    pwd=self.pwd)
+
+            if self.handle:
+                return self.handle
+                main.log.onfo( "Connection successful to the ovsdb node " +
+                                self.name )
+            else:
+                main.log.error( "Connection failed to the ovsdb node " +
+                                self.name )
+        except pexpect.EOF:
+            main.log.error( self.name + ": EOF exception found" )
+            main.log.error( self.name + ":     " + self.handle.before )
+            main.cleanup()
+            main.exit()
+        except Exception:
+            main.log.exception( self.name + ": Uncaught exception!" )
+            main.cleanup()
+            main.exit()
+
+    def disconnect(self):
+        try:
+            self.handle.sendline( "exit" )
+            self.handle.expect( "closed" )
+            response = main.TRUE
+        except pexpect.ExceptionPexpect:
+            response = main.FALSE
+            main.log.exception( self.name + ": Uncaught exception!" )
+        return response
+
     def setManager( self,ip ,port ):
         command= "sudo ovs-vsctl set-manager tcp:" + str(ip) + ":" + str(port)
         try:
