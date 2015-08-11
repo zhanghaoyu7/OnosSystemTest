@@ -57,7 +57,7 @@ class FUNCovsdbtest:
         main.step( "Create cell file" )
         cellAppString = main.params[ 'ENV' ][ 'cellApps' ]
         main.ONOSbench.createCellFile( main.ONOSbench.ip_address, cellName,
-                                       main.Ovsdb1.ip_address,
+                                       main.OVSDB1.ip_address,
                                        cellAppString, ipList )
 
         main.step( "Applying cell variable to environment" )
@@ -187,12 +187,13 @@ class FUNCovsdbtest:
         ctrlip = os.getenv( main.params['CTRL']['ip1'] )
         ovsdbport = main.params['CTRL']['ovsdbport']
         main.step( "Set ovsdb node manager" )
-        assignResult = main.Ovsdb1.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport)
         if not assignResult:
             main.cleanup()
             main.exit()
 
         main.step( "Check ovsdb node manager is " + str(ctrlip))
+        response = main.OVSDB1.getManager()
         if re.search(ctrlip, response):
             assignResult = assignResult and main.TRUE
             main.log.info("ovsdb node manager is " + str(response))
@@ -201,20 +202,20 @@ class FUNCovsdbtest:
             main.log.info("set ovsdb node manager " + str(response) + " failed!")
 
         main.step( "Check onoscli ovsdb-node have node " + str(OVSDB1Ip))
-        response = main.ONOScli1.getOvsdbNode()
+        response = main.ONOScli1.getOVSDBNode()
         if re.search(OVSDB1Ip, response):
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE
 
         main.step( "Delete ovsdb node manager" )
-        assignResult = main.Ovsdb1.delManager()
+        assignResult = main.OVSDB1.delManager()
         if not assignResult:
             main.cleanup()
             main.exit()
 
         main.step( "Check ovsdb node delete manager " + str(ctrlip))
-        response = main.Ovsdb1.getManager()
+        response = main.OVSDB1.getManager()
         if not re.search(ctrlip, response):
             assignResult = assignResult and main.TRUE
             main.log.info("delete ovsdb node manager sucess")
@@ -223,7 +224,7 @@ class FUNCovsdbtest:
             main.log.info("delete ovsdb node manager failed")
 
         main.step( "Check onoscli ovsdb-node delete node " + str(OVSDB1Ip))
-        response = main.ONOScli1.getOvsdbNode()
+        response = main.ONOScli1.getOVSDBNode()
         if not re.search(OVSDB1Ip, response):
             assignResult = assignResult and main.TRUE
         else:
@@ -245,19 +246,19 @@ class FUNCovsdbtest:
         ctrlip = os.getenv( main.params['CTRL']['ip1'] )
         ovsdbport = main.params['CTRL']['ovsdbport']
         main.step( "ovsdb node 1 set ovs manager to " + str(ctrlip))
-        assignResult = main.Ovsdb1.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport)
         if not assignResult:
             main.cleanup()
             main.exit()
 
         main.step( "ovsdb node 2 set ovs manager to " + str(ctrlip))
-        assignResult = main.Ovsdb2.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB2.setManager(ip=ctrlip,port=ovsdbport)
         if not assignResult:
             main.cleanup()
             main.exit()
 
         main.step( "Check ovsdb node 1 manager is " + str(ctrlip))
-        response = main.Ovsdb1.getManager()
+        response = main.OVSDB1.getManager()
         if re.search(ctrlip, response):
             assignResult = assignResult and main.TRUE
             main.log.info("ovsdb node 1 manager is " + str(response))
@@ -266,7 +267,7 @@ class FUNCovsdbtest:
             main.log.info("ovsdb node 1 manager check failed ")
 
         main.step( "Check ovsdb node 2 manager is " + str(ctrlip))
-        response = main.Ovsdb2.getManager()
+        response = main.OVSDB2.getManager()
         if re.search(ctrlip, response):
             assignResult = assignResult and main.TRUE
             main.log.info("ovsdb node 2 manager is " + str(response))
@@ -275,7 +276,7 @@ class FUNCovsdbtest:
             main.log.info("ovsdb node 1 manager check failed ")
 
         main.step( "Check default br-int bridge on ovsdb node " + str(OVSDB1Ip))
-        response = main.Ovsdb1.listBr()
+        response = main.OVSDB1.listBr()
         if re.search("br-int", response):
             assignResult = assignResult and main.TRUE
             main.log.info("onos add default bridge on the node 1")
@@ -284,7 +285,7 @@ class FUNCovsdbtest:
             main.log.info("onos add default bridge on the node 1 failed ")
 
         main.step( "Check default br-int bridge on ovsdb node " + str(OVSDB2Ip))
-        response = main.Ovsdb2.listBr()
+        response = main.OVSDB2.listBr()
         if re.search("br-int", response):
             assignResult = assignResult and main.TRUE
             main.log.info("onos add default bridge on the node 2")
@@ -293,7 +294,7 @@ class FUNCovsdbtest:
             main.log.info("onos add default bridge on the node 2 failed ")
 
         main.step( "Check default vxlan port on ovsdb node " + str(OVSDB1Ip))
-        response = main.Ovsdb1.listPorts("br-int")
+        response = main.OVSDB1.listPorts("br-int")
         if re.search("vxlan", response) and re.search(str(OVSDB2Ip), response):
             assignResult = assignResult and main.TRUE
             main.log.info("onos add default vxlan port in the br-int on the node 1")
@@ -302,7 +303,7 @@ class FUNCovsdbtest:
             main.log.info("onos add default vxlan port in the br-int on the node 1 failed")
 
         main.step( "Check default vxlan port on ovsdb node " + str(OVSDB2Ip))
-        response = main.Ovsdb2.listPorts("br-int")
+        response = main.OVSDB2.listPorts("br-int")
         if re.search("vxlan", response) and re.search(str(OVSDB1Ip), response):
             assignResult = assignResult and main.TRUE
             main.log.info("onos add default vxlan port in the br-int on the node 2")
@@ -327,38 +328,38 @@ class FUNCovsdbtest:
         ctrlip = main.params['CTRL']['ip1']
         ovsdbport = main.params['CTRL']['ovsdbport']
         main.step( "ovsdb node 1 set ovs manager to " + str(ctrlip))
-        assignResult = main.Ovsdb1.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport)
         if not assignResult:
             main.cleanup()
             main.exit()
         main.step( "ovsdb node 2 set ovs manager to " + str(ctrlip))
-        assignResult = main.Ovsdb2.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB2.setManager(ip=ctrlip,port=ovsdbport)
         if not assignResult:
             main.cleanup()
             main.exit()
         main.step( "Check ovsdb node 1 manager is " + str(ctrlip))
-        response = main.Ovsdb1.getManager()
+        response = main.OVSDB1.getManager()
         main.log.info("ovsdb node 1 manager is " + str(response))
         if re.search(ctrlip, response):
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE
         main.step( "Check ovsdb node 2 manager is " + str(ctrlip))
-        response = main.Ovsdb2.getManager()
+        response = main.OVSDB2.getManager()
         main.log.info("ovsdb node 2 manager is " + str(response))
         if re.search(ctrlip, response):
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE
         main.step( "Check ovsdb node 1 bridge br-int controller set to " + str(ctrlip))
-        response = main.Ovsdb1.getController("br-int")
+        response = main.OVSDB1.getController("br-int")
         print("Response is "+ str(response))
         if re.search(ctrlip, response):
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE
         main.step( "Check ovsdb node 2 bridge br-int controller set to  " + str(ctrlip))
-        response = main.Ovsdb2.getController("br-int")
+        response = main.OVSDB2.getController("br-int")
         print("Response is "+ str(response))
         if re.search(ctrlip, response):
             assignResult = assignResult and main.TRUE
@@ -396,20 +397,20 @@ class FUNCovsdbtest:
         ctrlip = main.params['CTRL']['ip1']
         ovsdbport = main.params['CTRL']['ovsdbport']
         main.step( "ovsdb node 1 set ovs manager to onos" )
-        assignResult = main.Ovsdb1.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport)
         if not assignResult:
             main.cleanup()
             main.exit()
         time.sleep(2)
         main.step( "Check ovsdb node 1 manager is " + str(ctrlip))
-        response = main.Ovsdb1.getManager()
+        response = main.OVSDB1.getManager()
         print("Response is "+ str(response))
         if re.search(ctrlip, response):
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE
         main.step( "Check ovsdb node 1 bridge br-int default flows on " + str(OVSDB1Ip))
-        response = main.Ovsdb1.dumpFlows(sw="br-int",protocols="OpenFlow13")
+        response = main.OVSDB1.dumpFlows(sw="br-int",protocols="OpenFlow13")
         print("Response is "+ str(response))    
         if re.search("cookie", response):
             assignResult = assignResult and main.TRUE
@@ -489,62 +490,62 @@ class FUNCovsdbtest:
         OVSDB1Ip = main.params['MN']['ip1']
         OVSDB2Ip = main.params['MN']['ip2']
         main.step( "ovsdb node 1 set ovs manager to " + str(ctrlip))
-        assignResult = main.Ovsdb1.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport)
         if not assignResult:
             main.cleanup()
             main.exit()
         time.sleep(2)
         main.step( "ovsdb node 2 set ovs manager to " + str(ctrlip))
-        assignResult = main.Ovsdb2.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB2.setManager(ip=ctrlip,port=ovsdbport)
         if not assignResult:
             main.cleanup()
             main.exit()
         time.sleep(2)
         
         main.step( "Create host1 on node 1 " + str (OVSDB1Ip))
-        assignResult = main.Ovsdb1.createHost(hostname="host1")
+        assignResult = main.OVSDB1.createHost(hostname="host1")
         if not assignResult:
             main.cleanup()
             main.exit()
         time.sleep(2)
        
         main.step( "Create host2 on node 2 " + str (OVSDB2Ip))
-        assignResult = main.Ovsdb2.createHost(hostname="host2")
+        assignResult = main.OVSDB2.createHost(hostname="host2")
         if not assignResult:
             main.cleanup()
             main.exit()
         time.sleep(2)
         
         main.step( "Create port on host1 on the node " + str (OVSDB1Ip))
-        assignResult = main.Ovsdb1.createHostport(hostname="host1",hostport="host1-eth0",hostportmac="000000000001")
+        assignResult = main.OVSDB1.createHostport(hostname="host1",hostport="host1-eth0",hostportmac="000000000001")
         if not assignResult:
             main.cleanup()
             main.exit()
         main.step( "Create port on host2 on the node " + str (OVSDB2Ip))
-        assignResult = main.Ovsdb2.createHostport(hostname="host2",hostport="host2-eth0",hostportmac="000000000002")
+        assignResult = main.OVSDB2.createHostport(hostname="host2",hostport="host2-eth0",hostportmac="000000000002")
         if not assignResult:
             main.cleanup()
             main.exit()    
             
         main.step( "add port to ovs br-int and host go-online on the node " + str (OVSDB1Ip))
-        assignResult = main.Ovsdb1. addPortToOvs(ovsname="br-int",ifaceId="host1-eth0",attachedMac="000000000001")
+        assignResult = main.OVSDB1. addPortToOvs(ovsname="br-int",ifaceId="host1-eth0",attachedMac="000000000001")
         if not assignResult:
             main.cleanup()
             main.exit() 
         main.step( "add port to ovs br-int and host go-online on the node " + str (OVSDB2Ip))
-        assignResult = main.Ovsdb1. addPortToOvs(ovsname="br-int",ifaceId="host2-eth0",attachedMac="000000000002")
+        assignResult = main.OVSDB1. addPortToOvs(ovsname="br-int",ifaceId="host2-eth0",attachedMac="000000000002")
         if not assignResult:
             main.cleanup()
             main.exit()
         main.step( "Check onos set host flows on the node " + str(OVSDB1Ip))
-        response = main.Ovsdb1.dumpFlows(sw="br-int",protocols="OpenFlow13")
+        response = main.OVSDB1.dumpFlows(sw="br-int",protocols="OpenFlow13")
         print("Response is " + str(response))    
         if re.search("cookie", response):
             assignResult = assignResult and main.TRUE
         else:
             assignResult = main.FALSE
         main.step( "Check onos set host flows on the node " + str(OVSDB2Ip))
-        response = main.Ovsdb2.dumpFlows(sw="br-int",protocols="OpenFlow13")
+        response = main.OVSDB2.dumpFlows(sw="br-int",protocols="OpenFlow13")
         print("Response is " + str(response))    
         if re.search("cookie", response):
             assignResult = assignResult and main.TRUE
@@ -552,10 +553,10 @@ class FUNCovsdbtest:
             assignResult = main.FALSE
             
         main.step( "Check hosts can ping each other" )
-        main.Ovsdb1.setHostportIp(hostname="host1" , hostport1="host1-eth0" , ip="10.0.0.1")
-        main.Ovsdb1.setHostportIp(hostname="host2" , hostport1="host2-eth0" ,ip="10.0.0.2")
-        pingResult1 = main.Ovsdb1.hostPing(src="10.0.0.1" ,hostname="host1" ,target="10.0.0.2" )
-        pingResult2 = main.Ovsdb2.hostPing(src="10.0.0.2" ,hostname="host2" ,target="10.0.0.1" )
+        main.OVSDB1.setHostportIp(hostname="host1" , hostport1="host1-eth0" , ip="10.0.0.1")
+        main.OVSDB1.setHostportIp(hostname="host2" , hostport1="host2-eth0" ,ip="10.0.0.2")
+        pingResult1 = main.OVSDB1.hostPing(src="10.0.0.1" ,hostname="host1" ,target="10.0.0.2" )
+        pingResult2 = main.OVSDB2.hostPing(src="10.0.0.2" ,hostname="host2" ,target="10.0.0.1" )
         stepResult = assignResult and pingResult1 and pingResult2
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
