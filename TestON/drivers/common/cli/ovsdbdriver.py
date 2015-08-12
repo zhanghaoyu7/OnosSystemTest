@@ -73,10 +73,16 @@ class OvsdbDriver( CLI ):
     def setManager( self,ip ,port ):
         command= "sudo ovs-vsctl set-manager tcp:" + str(ip) + ":" + str(port)
         try:
-            response = self.execute(
+            handle = self.execute(
                 cmd=command,
                 timeout=10 )
-            return response
+            if re.search( "Error", handle ):
+                main.log.error( "Error in set ovsdb manager" )
+                main.log.error( handle )
+                return main.FALSE
+            else:
+                main.log.info( "Ovsdb manager " + str( ip ) + " set" )
+                return main.TRUE
         except pexpect.EOF:
             main.log.error( self.name + ": EOF exception found" )
             main.log.error( self.name + ":     " + self.handle.before )
@@ -86,10 +92,16 @@ class OvsdbDriver( CLI ):
     def delManager( self):
         command= "sudo ovs-vsctl del-manager"
         try:
-            response = self.execute(
+            handle = self.execute(
                 cmd=command,
                 timeout=10 )
-            return response
+            if re.search( "Error", handle ):
+                main.log.error( "Error in delete ovsdb manager" )
+                main.log.error( handle )
+                return main.FALSE
+            else:
+                main.log.info( "Ovsdb manager delete" )
+                return main.TRUE
         except pexpect.EOF:
             main.log.error( self.name + ": EOF exception found" )
             main.log.error( self.name + ":     " + self.handle.before )
