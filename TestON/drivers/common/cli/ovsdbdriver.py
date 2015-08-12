@@ -83,7 +83,7 @@ class OvsdbDriver( CLI ):
             else:
                 main.log.info( "Ovsdb manager " + str( ip ) + " set" )
                 #ovsdb connection create
-                time.sleep(2)
+                time.sleep(3)
                 return main.TRUE
         except pexpect.EOF:
             main.log.error( self.name + ": EOF exception found" )
@@ -104,7 +104,7 @@ class OvsdbDriver( CLI ):
             else:
                 main.log.info( "Ovsdb manager delete" )
                 #ovsdb connection delete
-                time.sleep(2)
+                time.sleep(3)
                 return main.TRUE
         except pexpect.EOF:
             main.log.error( self.name + ": EOF exception found" )
