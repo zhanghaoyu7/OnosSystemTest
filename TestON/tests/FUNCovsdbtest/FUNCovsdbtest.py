@@ -327,7 +327,6 @@ class FUNCovsdbtest:
             stepResult = main.TRUE
         else:
             stepResult = main.FALSE
-        stepResult = re.search("br-int", response)
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
                                  onpass="onos add default bridge on the node 2 sucess",
