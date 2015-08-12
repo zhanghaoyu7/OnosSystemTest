@@ -14,7 +14,7 @@ zhanghaoyu7@huawei.com
 import os
 
 class FUNCovsdbtest:
-    
+
     def __init__( self ):
         self.default = ''
 
@@ -178,12 +178,17 @@ class FUNCovsdbtest:
 
     def CASE2( self, main ):
 
-        import re
-        import time
         """
         Test ovsdb connection and teardown
         """
         import os,sys
+        import re
+        import time
+
+        main.case( "Test ovsdb connection and teardown" )
+        main.caseExplanation = "Test ovsdb connection create and delete" +\
+                                " over ovsdb node and onos node "
+
         ctrlip = os.getenv( main.params['CTRL']['ip1'] )
         ovsdbport = main.params['CTRL']['ovsdbport']
         main.step( "Set ovsdb node manager" )
@@ -237,12 +242,17 @@ class FUNCovsdbtest:
 
     def CASE3( self, main ):
 
-        import re
-        import time
-        import os,sys
         """
         Test default br-int configuration and vxlan port
         """
+        import re
+        import time
+        import os,sys
+
+        main.case( "Test default br-int configuration and vxlan port" )
+        main.caseExplanation = "onos create default br-int bridge and" +\
+                                " vxlan port on the ovsdb node "
+
         ctrlip = os.getenv( main.params['CTRL']['ip1'] )
         ovsdbport = main.params['CTRL']['ovsdbport']
         main.step( "ovsdb node 1 set ovs manager to " + str(ctrlip))
@@ -316,7 +326,7 @@ class FUNCovsdbtest:
                                  onpass="Successfully set default br-int configuration and vxlan port " +\
                                  str(ctrlip),
                                  onfail="Failed to set default br-int configuration and vxlan port " +\
-                                 str(ctrlip))        
+                                 str(ctrlip))
 
     def CASE4( self, main ):
         import re
