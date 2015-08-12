@@ -193,52 +193,51 @@ class FUNCovsdbtest:
         ovsdbport = main.params['CTRL']['ovsdbport']
         main.step( "Set ovsdb node manager" )
         assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport)
-        if not assignResult:
-            main.cleanup()
-            main.exit()
+        stepResult = assignResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Set ovsdb node manager sucess",
+                                 onfail="Set ovsdb node manager failed")
 
         main.step( "Check ovsdb node manager is " + str(ctrlip))
         response = main.OVSDB1.getManager()
-        if re.search(ctrlip, response):
-            assignResult = assignResult and main.TRUE
-            main.log.info("ovsdb node manager is " + str(response))
-        else:
-            assignResult = main.FALSE
-            main.log.info("set ovsdb node manager " + str(response) + " failed!")
+        stepResult = re.search(ctrlip, response)
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="ovsdb node manager is " + str(response),
+                                 onfail="set ovsdb node manager " + str(response) + " failed!")
 
         main.step( "Check onoscli ovsdb-node have node " + str(OVSDB1Ip))
         response = main.ONOScli1.getOvsdbNode()
-        if re.search(OVSDB1Ip, response):
-            assignResult = assignResult and main.TRUE
-        else:
-            assignResult = main.FALSE
+        stepResult = re.search(OVSDB1Ip, response)
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="onos check ovsdb-node sucess",
+                                 onfail="onos check ovsdb-node failed")
 
         main.step( "Delete ovsdb node manager" )
         assignResult = main.OVSDB1.delManager()
-        if not assignResult:
-            main.cleanup()
-            main.exit()
+        stepResult = assignResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="ovsdb node delete manager sucess",
+                                 onfail="ovsdb node delete manager failed")
 
         main.step( "Check ovsdb node delete manager " + str(ctrlip))
         response = main.OVSDB1.getManager()
-        if not re.search(ctrlip, response):
-            assignResult = assignResult and main.TRUE
-            main.log.info("delete ovsdb node manager sucess")
-        else:
-            assignResult = main.FALSE
-            main.log.info("delete ovsdb node manager failed")
+        stepResult = re.search(ctrlip, response)
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Check ovsdb node delete manager sucess",
+                                 onfail="Check ovsdb node delete manager failed")
 
         main.step( "Check onoscli ovsdb-node delete node " + str(OVSDB1Ip))
         response = main.ONOScli1.getOvsdbNode()
-        if not re.search(OVSDB1Ip, response):
-            assignResult = assignResult and main.TRUE
-        else:
-            assignResult = main.FALSE
-        stepResult=assignResult
+        stepResult = re.search(OVSDB1Ip, response)
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
-                                 onpass="Successfully test ovsdb connection and teardown ",
-                                 onfail="Failed to test ovsdb connection and teardown " )
+                                 onpass="delete ovsdb node manager sucess",
+                                 onfail="delete ovsdb node manager failed")
 
     def CASE3( self, main ):
 
@@ -257,76 +256,71 @@ class FUNCovsdbtest:
         ovsdbport = main.params['CTRL']['ovsdbport']
         main.step( "ovsdb node 1 set ovs manager to " + str(ctrlip))
         assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport)
-        if not assignResult:
-            main.cleanup()
-            main.exit()
+        stepResult = assignResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="ovsdb node 1 set ovs manager to  to " +\
+                                  str(ctrlip) +" sucess",
+                                 onfail="ovsdb node 1 set ovs manager to  to " +\
+                                  str(ctrlip) +" failed")
 
         main.step( "ovsdb node 2 set ovs manager to " + str(ctrlip))
         assignResult = main.OVSDB2.setManager(ip=ctrlip,port=ovsdbport)
-        if not assignResult:
-            main.cleanup()
-            main.exit()
+        stepResult = assignResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="ovsdb node 2 set ovs manager to  to " +\
+                                  str(ctrlip) +" sucess",
+                                 onfail="ovsdb node 2 set ovs manager to  to " +\
+                                  str(ctrlip) +" failed")
 
         main.step( "Check ovsdb node 1 manager is " + str(ctrlip))
         response = main.OVSDB1.getManager()
-        if re.search(ctrlip, response):
-            assignResult = assignResult and main.TRUE
-            main.log.info("ovsdb node 1 manager is " + str(response))
-        else:
-            assignResult = main.FALSE
-            main.log.info("ovsdb node 1 manager check failed ")
+        stepResult = re.search(ctrlip, response)
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="ovsdb node 1 manager is " + str(response),
+                                 onfail="ovsdb node 1 manager check failed")
 
         main.step( "Check ovsdb node 2 manager is " + str(ctrlip))
         response = main.OVSDB2.getManager()
-        if re.search(ctrlip, response):
-            assignResult = assignResult and main.TRUE
-            main.log.info("ovsdb node 2 manager is " + str(response))
-        else:
-            assignResult = main.FALSE
-            main.log.info("ovsdb node 1 manager check failed ")
+        stepResult = re.search(ctrlip, response)
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="ovsdb node 2 manager is " + str(response),
+                                 onfail="ovsdb node 2 manager check failed")
 
         main.step( "Check default br-int bridge on ovsdb node " + str(OVSDB1Ip))
         response = main.OVSDB1.listBr()
-        if re.search("br-int", response):
-            assignResult = assignResult and main.TRUE
-            main.log.info("onos add default bridge on the node 1")
-        else:
-            assignResult = main.FALSE
-            main.log.info("onos add default bridge on the node 1 failed ")
+        stepResult = re.search("br-int", response)
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="onos add default bridge on the node 1 sucess",
+                                 onfail="onos add default bridge on the node 1 failed")
 
         main.step( "Check default br-int bridge on ovsdb node " + str(OVSDB2Ip))
         response = main.OVSDB2.listBr()
-        if re.search("br-int", response):
-            assignResult = assignResult and main.TRUE
-            main.log.info("onos add default bridge on the node 2")
-        else:
-            assignResult = main.FALSE
-            main.log.info("onos add default bridge on the node 2 failed ")
+        stepResult = re.search("br-int", response)
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="onos add default bridge on the node 2 sucess",
+                                 onfail="onos add default bridge on the node 2 failed")
 
         main.step( "Check default vxlan port on ovsdb node " + str(OVSDB1Ip))
         response = main.OVSDB1.listPorts("br-int")
-        if re.search("vxlan", response) and re.search(str(OVSDB2Ip), response):
-            assignResult = assignResult and main.TRUE
-            main.log.info("onos add default vxlan port in the br-int on the node 1")
-        else:
-            assignResult = main.FALSE
-            main.log.info("onos add default vxlan port in the br-int on the node 1 failed")
+        stepResult = re.search("vxlan", response) and re.search(str(OVSDB2Ip), response)
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="onos add default vxlan port on the node 1 sucess",
+                                 onfail="onos add default vxlan port on the node 1 failed")
 
         main.step( "Check default vxlan port on ovsdb node " + str(OVSDB2Ip))
         response = main.OVSDB2.listPorts("br-int")
-        if re.search("vxlan", response) and re.search(str(OVSDB1Ip), response):
-            assignResult = assignResult and main.TRUE
-            main.log.info("onos add default vxlan port in the br-int on the node 2")
-        else:
-            assignResult = main.FALSE
-            main.log.info("onos add default vxlan port in the br-int on the node 2 failed")
-        stepResult=assignResult
+        stepResult = re.search("vxlan", response) and re.search(str(OVSDB1Ip), response)
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
-                                 onpass="Successfully set default br-int configuration and vxlan port " +\
-                                 str(ctrlip),
-                                 onfail="Failed to set default br-int configuration and vxlan port " +\
-                                 str(ctrlip))
+                                 onpass="onos add default vxlan port on the node 2 sucess",
+                                 onfail="onos add default vxlan port on the node 2 failed")
 
     def CASE4( self, main ):
         import re
