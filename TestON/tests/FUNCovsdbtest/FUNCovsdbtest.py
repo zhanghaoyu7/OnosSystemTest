@@ -21,7 +21,7 @@ class FUNCovsdbtest:
     def CASE1( self, main ):
         """
         CASE1 is to compile ONOS and push it to the test machines
-        
+
         Startup sequence:
         cell <name>
         onos-verify-cell
@@ -43,7 +43,7 @@ class FUNCovsdbtest:
         main.case( "Setting up test environment" )
         main.caseExplanation = "Setup the test environment including " +\
                                 "installing ONOS, start ONOS."
- 
+
         # load some variables from the params file
         PULLCODE = False
         if main.params[ 'GIT' ][ 'pull' ] == 'True':
@@ -114,7 +114,7 @@ class FUNCovsdbtest:
         utilities.assert_equals( expect=main.TRUE,
                                  actual=cleanInstallResult,
                                  onpass="MCI successful",
-                                 onfail="MCI failed" )        
+                                 onfail="MCI failed" )
         main.step( "Creating ONOS package" )
         packageResult = main.ONOSbench.onosPackage()
         utilities.assert_equals( expect=main.TRUE,
