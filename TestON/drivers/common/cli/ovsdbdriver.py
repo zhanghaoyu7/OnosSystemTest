@@ -192,7 +192,7 @@ class OvsdbDriver( CLI ):
             main.log.error(self.name + ":     " + self.handle.before)
             main.cleanup()
             main.exit()
-    def ovsShow(self):
+    def show(self):
         """
         Parameters:
             none
