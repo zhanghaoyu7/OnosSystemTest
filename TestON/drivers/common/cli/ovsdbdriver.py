@@ -70,7 +70,7 @@ class OvsdbDriver( CLI ):
             main.log.exception( self.name + ": Uncaught exception!" )
         return response
 
-    def setManager( self ,delaytime="5" , ip ,port):
+    def setManager( self , ip ,port ,delaytime="5"):
         command= "sudo ovs-vsctl set-manager tcp:" + str(ip) + ":" + str(port)
         try:
             handle = self.execute(
