@@ -21,6 +21,10 @@
         <ovsdbport>6640</ovsdbport>
     </CTRL>
 
+    <TIMER>
+        <delaytime>5</delaytime>      #delaytime for ovsdb connection create and delete
+    </TIMER>
+
     <HTTP>
         <port>False</port>
         <path>/onos/vtn</path>

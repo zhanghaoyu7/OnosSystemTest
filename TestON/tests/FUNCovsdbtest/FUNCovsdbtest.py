@@ -191,9 +191,10 @@ class FUNCovsdbtest:
 
         ctrlip = os.getenv( main.params['CTRL']['ip1'] )
         ovsdbport = main.params['CTRL']['ovsdbport']
+        delaytime = main.params['TIMER']['delaytime']
 
         main.step( "Set ovsdb node manager" )
-        assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport,delaytime=delaytime)
         stepResult = assignResult
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
@@ -223,7 +224,7 @@ class FUNCovsdbtest:
                                  onfail="onos check ovsdb-node failed")
 
         main.step( "Delete ovsdb node manager" )
-        deleteResult = main.OVSDB1.delManager()
+        deleteResult = main.OVSDB1.delManager(delaytime=delaytime)
         stepResult = deleteResult
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
@@ -267,9 +268,10 @@ class FUNCovsdbtest:
 
         ctrlip = os.getenv( main.params['CTRL']['ip1'] )
         ovsdbport = main.params['CTRL']['ovsdbport']
+        delaytime = main.params['TIMER']['delaytime']
 
         main.step( "ovsdb node 1 set ovs manager to " + str(ctrlip))
-        assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB1.setManager(ip=ctrlip,port=ovsdbport,delaytime=delaytime)
         stepResult = assignResult
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
@@ -279,7 +281,7 @@ class FUNCovsdbtest:
                                   str(ctrlip) +" failed")
 
         main.step( "ovsdb node 2 set ovs manager to " + str(ctrlip))
-        assignResult = main.OVSDB2.setManager(ip=ctrlip,port=ovsdbport)
+        assignResult = main.OVSDB2.setManager(ip=ctrlip,port=ovsdbport,delaytime=delaytime)
         stepResult = assignResult
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
