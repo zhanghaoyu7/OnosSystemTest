@@ -84,7 +84,7 @@ class FUNCovsdbtest:
         for node in main.nodes:
             main.ONOSbench.onosUninstall( node.ip_address )
 
-        # Make sure ONOS is DEAD
+        # Make sure ONOS process is not running
         main.log.info( "Killing any ONOS processes" )
         killResults = main.TRUE
         for node in main.nodes:
