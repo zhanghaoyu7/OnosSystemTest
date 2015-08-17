@@ -70,7 +70,7 @@ class OvsdbDriver( CLI ):
             main.log.exception( self.name + ": Uncaught exception!" )
         return response
 
-    def setManager( self, ip ,port ,delaytime=5):
+    def setManager( self ,delaytime="5" , ip ,port):
         command= "sudo ovs-vsctl set-manager tcp:" + str(ip) + ":" + str(port)
         try:
             handle = self.execute(
@@ -83,8 +83,8 @@ class OvsdbDriver( CLI ):
             else:
                 main.log.info( "Ovsdb manager " + str( ip ) + " set" )
                 #delay time  for ovsdb connection create
-                main.log.info( "Wait " + delaytime + " seconds for ovsdb connection create")
-                time.sleep(delaytime)
+                main.log.info( "Wait " + str(delaytime) + " seconds for ovsdb connection create")
+                time.sleep(int(delaytime))
                 return main.TRUE
         except pexpect.EOF:
             main.log.error( self.name + ": EOF exception found" )
@@ -92,7 +92,7 @@ class OvsdbDriver( CLI ):
             main.cleanup()
             main.exit()
 
-    def delManager( self ,delaytime=5):
+    def delManager( self ,delaytime="5"):
         command= "sudo ovs-vsctl del-manager"
         try:
             handle = self.execute(
@@ -105,8 +105,8 @@ class OvsdbDriver( CLI ):
             else:
                 main.log.info( "Ovsdb manager delete" )
                 #delay time  for ovsdb connection delete
-                main.log.info( "Wait " + delaytime + " seconds for ovsdb connection delete")
-                time.sleep(delaytime)
+                main.log.info( "Wait " + str(delaytime) + " seconds for ovsdb connection delete")
+                time.sleep(int(delaytime))
                 return main.TRUE
         except pexpect.EOF:
             main.log.error( self.name + ": EOF exception found" )
