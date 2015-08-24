@@ -164,17 +164,17 @@ class FUNCovsdbtest:
                                  onpass="Install onos-ovsdatabase successful",
                                  onfail="Install onos-ovsdatabase failed" )
 
-        main.step( "Install onos-app-vtn" )
-        installResults = main.ONOScli1.featureInstall( "onos-app-vtn" )
-        utilities.assert_equals( expect=main.TRUE, actual=installResults,
-                                 onpass="Install onos-app-vtn successful",
-                                 onfail="Install onos-app-vtn failed" )
-
         main.step( "Install onos-app-vtnrsc" )
         installResults = main.ONOScli1.featureInstall( "onos-app-vtnrsc" )
         utilities.assert_equals( expect=main.TRUE, actual=installResults,
                                  onpass="Install onos-app-vtnrsc successful",
                                  onfail="Install onos-app-vtnrsc failed" )
+
+        main.step( "Install onos-app-vtn" )
+        installResults = main.ONOScli1.featureInstall( "onos-app-vtn" )
+        utilities.assert_equals( expect=main.TRUE, actual=installResults,
+                                 onpass="Install onos-app-vtn successful",
+                                 onfail="Install onos-app-vtn failed" )
 
         main.step( "Install onos-app-vtnweb" )
         installResults = main.ONOScli1.featureInstall( "onos-app-vtnweb" )
