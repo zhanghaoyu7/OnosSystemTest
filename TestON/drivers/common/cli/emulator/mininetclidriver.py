@@ -2637,7 +2637,8 @@ class MininetCliDriver( Emulator ):
             main.log.error(self.name + ":     " + self.handle.before)
             main.cleanup()
             main.exit()
-    def dumpFlows(self ,sw ,protocols=None):
+
+    def dumpFlows( self, sw, protocols=None ):
         """
         Parameters:
             sw: The name of an OVS switch. Example "s1"
@@ -2646,13 +2647,12 @@ class MininetCliDriver( Emulator ):
             or main.FALSE on timeout"""
         if protocols:
             command = "sudo ovs-ofctl -O " + \
-                protocols + " dump-flows " + str(sw)
+                protocols + " dump-flows " + str( sw )
         else:
-            command = "sudo ovs-ofctl dump-flows " + str(sw)
+            command = "sudo ovs-ofctl dump-flows " + str( sw )
         try:
             response = self.execute(
                 cmd=command,
-                prompt="\$",
                 timeout=10 )
             if response:
                 return response
@@ -2663,35 +2663,48 @@ class MininetCliDriver( Emulator ):
             main.log.error(self.name + ":     " + self.handle.before)
             main.cleanup()
             main.exit()
-    def createHost(self, hostname):
-        command = "sudo ip netns add " + str(hostname)
+
+    def createHost( self, hostname ):
+        command = "sudo ip netns add " + str( hostname )
         try:
             response = self.execute(
                 cmd=command,
-                prompt="\$",
                 timeout=10)
-            return response
+            if re.search( "Error", handle ):
+                main.log.error( "Error in create host" + str( hostname ) )
+                main.log.error( handle )
+                return main.FALSE
+            else:
+                main.log.info( "Create " + str( hostname ) + " sucess" )
+                return main.TRUE
         except pexpect.EOF:
             main.log.error(self.name + ": EOF exception found")
             main.log.error(self.name + ":     " + self.handle.before)
             main.cleanup()
             main.exit()
-    def createHostport(self, hostname="host1" ,hostport="host1-eth0" ,ovsport="port1" , hostportmac="000000000001"):
+
+    def createHostport(self, hostname="host1", hostport="host1-eth0", ovsport="port1", hostportmac="000000000001" ):
         command = "sudo ip link add " + str(hostport) +" type veth peer name " + str(ovsport)
         command += ";" +" sudo ifconfig " + str(hostport) + " hw ether " + str(hostportmac)
         command += ";" +" sudo ip link set " + str(hostport) + " netns " + str(hostname) 
         try:
             response = self.execute(
                 cmd=command,
-                prompt="\$",
                 timeout=10)
-            return response
+            if re.search( "Error", handle ):
+                main.log.error( "Error in create host port " + str( hostport ) + " on " + str( hostname ) )
+                main.log.error( handle )
+                return main.FALSE
+            else:
+                main.log.info( "Create host port " + str( hostport ) + " on " + str( hostname ) + " sucess" )
+                return main.TRUE
         except pexpect.EOF:
             main.log.error(self.name + ": EOF exception found")
             main.log.error(self.name + ":     " + self.handle.before)
             main.cleanup()
             main.exit()
-    def addPortToOvs(self,ifaceId,attachedMac,vmuuid,port="port1",ovsname="br-int"):
+
+    def addPortToOvs(self, ifaceId, attachedMac, vmuuid, port="port1", ovsname="br-int" ):
         command = "sudo ovs-vsctl add-port " + str(ovsname) +" " + str(port)
         if ifaceId:
             command += " -- set Interface " + str(port) + " external-ids:iface-id=" + str(ifaceId) + " external-ids:iface-status=active"
@@ -2702,41 +2715,53 @@ class MininetCliDriver( Emulator ):
         try:
             response = self.execute(
                 cmd=command,
-                prompt="\$",
                 timeout=10)
-            return response
+            if re.search( "Error", handle ):
+                main.log.error( "Error in add port " + str(port) + " to ovs " + str( ovsname ) )
+                main.log.error( handle )
+                return main.FALSE
+            else:
+                main.log.info( "Add port " + str(port) + " to ovs " + str( ovsname )  + " sucess" )
+                return main.TRUE
         except pexpect.EOF:
             main.log.error(self.name + ": EOF exception found")
             main.log.error(self.name + ":     " + self.handle.before)
             main.cleanup()
             main.exit()
-    def setHostportIp(self ,ip,hostname="host1" ,hostport1="host1-eth0"):
+
+    def setHostportIp(self, ip, hostname="host1", hostport1="host1-eth0" ):
         command = "sudo ip netns exec " + str(hostname) +" ifconfig " + str(hostport1) + " " + str(ip)
         try:
             response = self.execute(
                 cmd=command,
-                prompt="\$",
                 timeout=10)
-            return response
+            if re.search( "Error", handle ):
+                main.log.error( "Error in set host ip for " + str( hostport1 ) + " on host " + str( hostname ) )
+                main.log.error( handle )
+                return main.FALSE
+            else:
+                main.log.info( "Set host ip for " + str( hostport1 ) + " on host " + str( hostname ) + " sucess" )
+                return main.TRUE
         except pexpect.EOF:
             main.log.error(self.name + ": EOF exception found")
             main.log.error(self.name + ":     " + self.handle.before)
             main.cleanup()
             main.exit()
-    def hostPing(self,src ,target ,hostname="host1"):
+
+    def hostPing(self, src, target, hostname="host1" ):
         if src:
-            command = "sudo ip netns exec " + str(hostname) +" ping -c 1 -S " + str(src) +" " + str(target)
+            command = "sudo ip netns exec " + str(hostname) +" ping -c 1 -S " + str(src) + " " + str(target)
         else:
             command = "sudo ip netns exec " + str(hostname) +" ping -c 1 " + str(target)
         try:
             response = self.execute(
                 cmd=command,
-                prompt="\$",
                 timeout=10)
             if re.search(',\s0\%\spacket\sloss', response):
                 main.log.info(self.name + ": no packets lost, host is reachable")
                 return main.TRUE
             else:
+                main.log.info(self.name + ": packets lost, host is unreachable")
                 return main.FALSE
         except pexpect.EOF:
             main.log.error(self.name + ": EOF exception found")
