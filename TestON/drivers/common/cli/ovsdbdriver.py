@@ -329,14 +329,15 @@ class OvsdbDriver( CLI ):
 
     def hostPing(self, src, target, hostname="host1" ):
         if src:
-            command = "sudo ip netns exec " + str(hostname) +" ping -c 1 -S " + str(src) + " " + str(target)
+            command = "sudo ip netns exec " + str( hostname ) +" ping -c 1 -S " +\
+             str( src ) + " " + str( target )
         else:
-            command = "sudo ip netns exec " + str(hostname) +" ping -c 1 " + str(target)
+            command = "sudo ip netns exec " + str( hostname ) +" ping -c 1 " + str( target )
         try:
             handle = self.execute(
                 cmd=command,
                 timeout=10)
-            if re.search(',\s0\%\spacket\sloss', response):
+            if re.search(',\s0\%\spacket\sloss', handle):
                 main.log.info(self.name + ": no packets lost, host is reachable")
                 return main.TRUE
             else:
