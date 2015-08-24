@@ -348,3 +348,47 @@ class OvsdbDriver( CLI ):
             main.log.error(self.name + ":     " + self.handle.before)
             main.cleanup()
             main.exit()
+
+    def delBr( self, sw ):
+        """
+        Parameters:
+            sw: The name of an OVS switch. Example "br-int"
+        Return:
+            Delete sucess return main.TRUE or main.FALSE on delete failed
+        """
+        command= "sudo ovs-vsctl del-br " + str( sw )
+        try:
+            response = self.execute(
+                cmd=command,
+                timeout=10 )
+            if response:
+                return main.TRUE
+            else:
+                return main.FALSE
+        except pexpect.EOF:
+            main.log.error( self.name + ": EOF exception found" )
+            main.log.error( self.name + ":     " + self.handle.before )
+            main.cleanup()
+            main.exit()
+
+    def delHost( self, hostname ):
+        """
+        Parameters:
+            hostname: The name of an ip netns name. Example "host1"
+        Return:
+            Delete sucess return main.TRUE or main.FALSE on delete failed
+        """
+        command= "sudo ip netns delete " + str( hostname )
+        try:
+            response = self.execute(
+                cmd=command,
+                timeout=10 )
+            if response:
+                return main.TRUE
+            else:
+                return main.FALSE
+        except pexpect.EOF:
+            main.log.error( self.name + ": EOF exception found" )
+            main.log.error( self.name + ":     " + self.handle.before )
+            main.cleanup()
+            main.exit()

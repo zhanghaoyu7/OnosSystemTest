@@ -664,3 +664,65 @@ class FUNCovsdbtest:
                                         str( ctrlip ),
                                  onfail="Failed to host go online and ping each other,controller is " +\
                                         str( ctrlip ) )
+
+    def CASE8( self, main ):
+
+        """
+        Clear ovs configuration and host configuration
+        """
+        import re
+        import time
+        import os,sys
+
+        ctrlip = os.getenv( main.params[ 'CTRL' ][ 'ip1' ] )
+        OVSDB1Ip = os.getenv( main.params[ 'OVSDB' ][ 'ip1' ] )
+        OVSDB2Ip = os.getenv( main.params[ 'OVSDB' ][ 'ip2' ] )
+        delaytime = main.params[ 'TIMER' ][ 'delaytime' ]
+
+        main.step( "Delete ovsdb node 1 manager" )
+        deleteResult = main.OVSDB1.delManager( delaytime=delaytime )
+        stepResult = deleteResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="ovsdb node 1 delete manager sucess",
+                                 onfail="ovsdb node 1 delete manager failed" )
+
+        main.step( "Delete ovsdb node 2 manager" )
+        deleteResult = main.OVSDB2.delManager( delaytime=delaytime )
+        stepResult = deleteResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="ovsdb node 2 delete manager sucess",
+                                 onfail="ovsdb node 2 delete manager failed" )
+
+        main.step( "Delete ovsdb node 1 bridge br-int" )
+        deleteResult = main.OVSDB1.delBr( sw="br-int" )
+        stepResult = deleteResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Delete ovsdb node 1 bridge br-int sucess",
+                                 onfail="Delete ovsdb node 1 bridge br-int failed" )
+
+        main.step( "Delete ovsdb node 2 bridge br-int" )
+        deleteResult = main.OVSDB2.delBr( sw="br-int" )
+        stepResult = deleteResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Delete ovsdb node 2 bridge br-int sucess",
+                                 onfail="Delete ovsdb node 2 bridge br-int failed" )
+
+        main.step( "Delete ip netns host on the ovsdb node 1" )
+        deleteResult = main.OVSDB1.delHost( hostname="host1" )
+        stepResult = deleteResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Delete ip netns host on the ovsdb node 1 sucess",
+                                 onfail="Delete ip netns host on the ovsdb node 1 failed" )
+
+        main.step( "Delete ip netns host on the ovsdb node 2" )
+        deleteResult = main.OVSDB2.delHost( hostname="host2" )
+        stepResult = deleteResult
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Delete ip netns host on the ovsdb node 2 sucess",
+                                 onfail="Delete ip netns host on the ovsdb node 2 failed" )
