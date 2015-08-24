@@ -246,7 +246,7 @@ class OvsdbDriver( CLI ):
     def createHost( self, hostname ):
         command = "sudo ip netns add " + str( hostname )
         try:
-            response = self.execute(
+            handle = self.execute(
                 cmd=command,
                 timeout=10)
             if re.search( "Error", handle ):
@@ -267,7 +267,7 @@ class OvsdbDriver( CLI ):
         command += ";" +" sudo ifconfig " + str(hostport) + " hw ether " + str(hostportmac)
         command += ";" +" sudo ip link set " + str(hostport) + " netns " + str(hostname) 
         try:
-            response = self.execute(
+            handle = self.execute(
                 cmd=command,
                 timeout=10)
             if re.search( "Error", handle ):
@@ -292,7 +292,7 @@ class OvsdbDriver( CLI ):
         if vmuuid:
             command += " external-ids:vm-uuid=" + str(vmuuid)
         try:
-            response = self.execute(
+            handle = self.execute(
                 cmd=command,
                 timeout=10)
             if re.search( "Error", handle ):
@@ -311,7 +311,7 @@ class OvsdbDriver( CLI ):
     def setHostportIp(self, ip, hostname="host1", hostport1="host1-eth0" ):
         command = "sudo ip netns exec " + str(hostname) +" ifconfig " + str(hostport1) + " " + str(ip)
         try:
-            response = self.execute(
+            handle = self.execute(
                 cmd=command,
                 timeout=10)
             if re.search( "Error", handle ):
@@ -333,7 +333,7 @@ class OvsdbDriver( CLI ):
         else:
             command = "sudo ip netns exec " + str(hostname) +" ping -c 1 " + str(target)
         try:
-            response = self.execute(
+            handle = self.execute(
                 cmd=command,
                 timeout=10)
             if re.search(',\s0\%\spacket\sloss', response):
