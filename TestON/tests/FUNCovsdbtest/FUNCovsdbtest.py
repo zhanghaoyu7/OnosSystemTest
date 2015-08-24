@@ -609,7 +609,8 @@ class FUNCovsdbtest:
                                  onfail="Create port on host1 on the node " + str( OVSDB2Ip ) + " failed" )
 
         main.step( "Add port to ovs br-int and host go-online on the node " + str ( OVSDB1Ip ) )
-        stepResult = main.OVSDB1.addPortToOvs( ovsname="br-int", ifaceId="host1-eth0", attachedMac="000000000001" )
+        stepResult = main.OVSDB1.addPortToOvs( ovsname="br-int", ifaceId="00000000-0000-0000-0000-000000000001",
+                                               attachedMac="00:00:00:00:00:01", vmuuid="10000000-0000-0000-0000-000000000001" )
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
                                  onpass="Add port to ovs br-int and host go-online on the node " +\
@@ -618,7 +619,8 @@ class FUNCovsdbtest:
                                   str( OVSDB1Ip ) + " failed" )
 
         main.step( "Add port to ovs br-int and host go-online on the node " + str ( OVSDB2Ip ) )
-        stepResult = main.OVSDB2.addPortToOvs( ovsname="br-int", ifaceId="host2-eth0", attachedMac="000000000002" )
+        stepResult = main.OVSDB2.addPortToOvs( ovsname="br-int", ifaceId="00000000-0000-0000-0000-000000000002",
+                                               attachedMac="00:00:00:00:00:01", vmuuid="10000000-0000-0000-0000-000000000001" )
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
                                  onpass="Add port to ovs br-int and host go-online on the node " +\
@@ -628,7 +630,7 @@ class FUNCovsdbtest:
 
         main.step( "Check onos set host flows on the node " + str( OVSDB1Ip ) )
         response = main.OVSDB1.dumpFlows( sw="br-int", protocols="OpenFlow13" )
-        if re.search( "cookie", response ):
+        if re.search( "00:00:00:00:00:01", response ):
             stepResult = main.TRUE
         else:
             stepResult = main.FALSE
@@ -641,7 +643,7 @@ class FUNCovsdbtest:
 
         main.step( "Check onos set host flows on the node " + str( OVSDB2Ip ) )
         response = main.OVSDB2.dumpFlows( sw="br-int", protocols="OpenFlow13" )
-        if re.search( "cookie", response ):
+        if re.search( "00:00:00:00:00:02", response ):
             stepResult = main.TRUE
         else:
             stepResult = main.FALSE
