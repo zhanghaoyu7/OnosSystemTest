@@ -350,7 +350,7 @@ class FUNCovsdbtest:
         import time
         import os,sys
 
-        ctrlip = main.params[ 'CTRL' ][ 'ip1' ]
+        ctrlip = os.getenv( main.params[ 'CTRL' ][ 'ip1' ] )
         ovsdbport = main.params[ 'CTRL' ][ 'ovsdbport' ]
         delaytime = main.params[ 'TIMER' ][ 'delaytime' ]
 
@@ -453,7 +453,7 @@ class FUNCovsdbtest:
         import time
         import os,sys
 
-        ctrlip = main.params[ 'CTRL' ][ 'ip1' ]
+        ctrlip = os.getenv( main.params[ 'CTRL' ][ 'ip1' ] )
         ovsdbport = main.params[ 'CTRL' ][ 'ovsdbport' ]
         delaytime = main.params[ 'TIMER' ][ 'delaytime' ]
 
@@ -499,7 +499,7 @@ class FUNCovsdbtest:
         from tests.FUNCovsdbtest.dependencies.Nbdata import SubnetkData
         from tests.FUNCovsdbtest.dependencies.Nbdata import VirtualPortData
         
-        ctrlip = main.params['CTRL']['ip1']
+        ctrlip = os.getenv( main.params[ 'CTRL' ][ 'ip1' ] )
         port = main.params['HTTP']['port']
         path = main.params['HTTP']['path']
         
@@ -554,10 +554,8 @@ class FUNCovsdbtest:
         import time
         import os,sys
 
-        ctrlip = main.params[ 'CTRL' ][ 'ip1' ]
+        ctrlip = os.getenv( main.params[ 'CTRL' ][ 'ip1' ] )
         ovsdbport = main.params[ 'CTRL' ][ 'ovsdbport' ]
-        OVSDB1Ip = main.params[ 'OVSDB' ][ 'ip1' ]
-        OVSDB2Ip = main.params[ 'OVSDB' ][ 'ip2' ]
         delaytime = main.params[ 'TIMER' ][ 'delaytime' ]
 
         main.step( "ovsdb node 1 set ovs manager to " + str( ctrlip ) )
