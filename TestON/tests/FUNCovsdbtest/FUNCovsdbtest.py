@@ -7,8 +7,9 @@ CASE2: Test ovsdb connection and tearDown
 CASE3: Test default br-int configuration and vxlan port
 CASE4: Test default openflow configuration
 CASE5: Test default flows
-CASE6: Configure Network Subnet Port And Check On ONOS
+CASE6: Configure Network Subnet Port
 CASE7: Test host go online and ping each other
+CASE8: Clear ovs configuration and host configuration
 zhanghaoyu7@huawei.com
 """
 import os
@@ -491,59 +492,95 @@ class FUNCovsdbtest:
 
     def CASE6( self, main ):
         """
-        Configure Network Subnet Port And Check On ONOS
+        Configure Network Subnet Port
         """
-        import os,sys
-        sys.path.append("..")
-        from tests.FUNCovsdbtest.dependencies.Nbdata import NetworkData
-        from tests.FUNCovsdbtest.dependencies.Nbdata import SubnetkData
-        from tests.FUNCovsdbtest.dependencies.Nbdata import VirtualPortData
+        import os
         
-        ctrlip = os.getenv( main.params[ 'CTRL' ][ 'ip1' ] )
-        port = main.params['HTTP']['port']
+        try:
+            from tests.FUNCovsdbtest.dependencies.Nbdata import NetworkData
+            from tests.FUNCovsdbtest.dependencies.Nbdata import SubnetData
+            from tests.FUNCovsdbtest.dependencies.Nbdata import VirtualPortData
+        except ImportError:
+            main.log.exception( "Something wrong with import file or code error." )
+            main.log.info( "Import Error, please check!" )
+            main.cleanup()
+            main.exit()
+
+        main.log.info( "Configure Network Subnet Port Start" )
+        main.case( "Configure Network Subnet Port" )
+        main.caseExplanation = "Configure Network Subnet Port " +\
+                                "Verify post is OK"
+
+        ctrlip = os.getenv( main.params['CTRL']['ip1'] )
+        httpport = main.params['HTTP']['port']
         path = main.params['HTTP']['path']
-        
+
         main.step( "Generate Post Data" )
-        network = NetworkData
+        network = NetworkData()
         network.id = '030d6d3d-fa36-45bf-ae2b-4f4bc43a54dc'
         network.tenant_id = '26cd996094344a0598b0a1af1d525cdc'
-        subnet = SubnetkData()
-        subnet.id = 'e44bd655-e22c-4aeb-b1e9-ea1606875178'
+        subnet = SubnetData()
+        subnet.id = "e44bd655-e22c-4aeb-b1e9-ea1606875178"
         subnet.tenant_id = network.tenant_id
-        subnet.network_id = network_id
-        virtualport = VirtualPortData()
-        virtualport.id = '9352e05c-58b8-4f2c-b3df-c20624e22d44'
-        virtualport.subnetId =subnet.id
-        virtualport.tenant_id = network.tenant_id
-        virtualport.network_id = network_id
-        
+        subnet.network_id = network.id
+        subnet.start = "10.0.0.1"
+        subnet.end = "10.0.0.254"
+        subnet.cidr = "10.0.0.0/24"
+        port1 = VirtualPortData()
+        port1.id = "00000000-0000-0000-0000-000000000001"
+        port1.subnet_id = subnet.id
+        port1.tenant_id = network.tenant_id
+        port1.network_id = network.id
+        port1.macAddress = "00:00:00:00:00:01"
+        port1.ip_address = "10.0.0.1"
+        port2 = VirtualPortData()
+        port2.id = "00000000-0000-0000-0000-000000000002"
+        port2.subnet_id = subnet.id
+        port2.tenant_id = network.tenant_id
+        port2.network_id = network.id
+        port2.macAddress = "00:00:00:00:00:02"
+        port2.ip_address = "10.0.0.2"
+
         networkpostdata = network.DictoJson()
-        subnetkpostdata = subnet.DictoJson()
-        virtualportpostdata = virtualport.DictoJson()
-        
-        main.step( "Post Network Data via HTTP(post port need post network)" )
-        Poststatus, result = main.ONOSrest.send(ctrlip,port,'',path+'networks/','POST',None,networkpostdata)
+        subnetpostdata = subnet.DictoJson()
+        port1postdata = port1.DictoJson()
+        port2postdata = port2.DictoJson()
+
+        main.step( "Post Network Data via HTTP(Post port need post network)" )
+        Poststatus, result = main.ONOSrest.send( ctrlip, httpport, '', path + 'networks/',
+                                                 'POST', None, networkpostdata )
         utilities.assert_equals(
                 expect='200',
                 actual=Poststatus,
-                onpass="Post Network Success ",
-                onfail="Post Network Failed " + str(Poststatus)+str(result))
-        
-        main.step( "Post Subnet Data via HTTP(post port need post network)" )
-        Poststatus, result = main.ONOSrest.send(ctrlip,port,'',path+'subnets/','POST',None,subnetpostdata)
+                onpass="Post Network Success",
+                onfail="Post Network Failed " + str( Poststatus ) + "," + str( result ) )
+
+        main.step( "Post Subnet Data via HTTP(Post port need post subnet)" )
+        Poststatus, result = main.ONOSrest.send( ctrlip, httpport, '', path + 'subnets/',
+                                                 'POST', None, subnetpostdata )
         utilities.assert_equals(
                 expect='202',
                 actual=Poststatus,
-                onpass="Post Subnet Success ",
-                onfail="Post Subnet Failed " + str(Poststatus)+str(result))
-        
-        main.step( "Post VirtualPort Data via HTTP" )
-        Poststatus, result = main.ONOSrest.send(ctrlip,port,'',path+'virtualports/','POST',None,virtualportpostdata)
+                onpass="Post Subnet Success",
+                onfail="Post Subnet Failed " + str( Poststatus ) + "," + str( result ) )
+
+        main.step( "Post Port1 Data via HTTP" )
+        Poststatus, result = main.ONOSrest.send( ctrlip, httpport, '', path + 'ports/',
+                                                 'POST', None, port1postdata )
         utilities.assert_equals(
                 expect='200',
                 actual=Poststatus,
-                onpass="Post VirtualPort Success ",
-                onfail="Post VirtualPort Failed " + str(Poststatus)+str(result))
+                onpass="Post Port Success",
+                onfail="Post Port Failed " + str( Poststatus ) + "," + str( result ) )
+
+        main.step( "Post Port2 Data via HTTP" )
+        Poststatus, result = main.ONOSrest.send( ctrlip, httpport, '', path + 'ports/',
+                                                 'POST', None, port2postdata )
+        utilities.assert_equals(
+                expect='200',
+                actual=Poststatus,
+                onpass="Post Port Success",
+                onfail="Post Port Failed " + str( Poststatus ) + "," + str( result ) )
 
     def CASE7( self, main ):
 
