@@ -425,7 +425,7 @@ class FUNCovsdbtest:
 
         main.step( "Check onoscli devices have ovs " + str( OVSDB1Ip ) )
         response = main.ONOScli1.devices()
-        if re.search( OVSDB1Ip, response ):
+        if re.search( OVSDB1Ip, response ) and not re.search( "false", response ):
             stepResult = main.TRUE
         else:
             stepResult = main.FALSE
@@ -436,14 +436,14 @@ class FUNCovsdbtest:
 
         main.step( "Check onoscli devices have ovs " + str( OVSDB2Ip ) )
         response = main.ONOScli1.devices()
-        if re.search( OVSDB1Ip, response ):
+        if re.search( OVSDB2Ip, response ) and not re.search( "false", response ):
             stepResult = main.TRUE
         else:
             stepResult = main.FALSE
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
-                                 onpass="Check onoscli devices have ovs " + str( OVSDB1Ip ) + " sucess",
-                                 onfail="Check onoscli devices have ovs " + str( OVSDB1Ip ) + " failed" )
+                                 onpass="Check onoscli devices have ovs " + str( OVSDB2Ip ) + " sucess",
+                                 onfail="Check onoscli devices have ovs " + str( OVSDB2Ip ) + " failed" )
 
     def CASE5( self, main ):
 
@@ -495,7 +495,7 @@ class FUNCovsdbtest:
         Configure Network Subnet Port
         """
         import os
-        
+
         try:
             from tests.FUNCovsdbtest.dependencies.Nbdata import NetworkData
             from tests.FUNCovsdbtest.dependencies.Nbdata import SubnetData
@@ -586,7 +586,7 @@ class FUNCovsdbtest:
 
         """
         Test host go online and ping each other
-        """        
+        """
         import re
         import time
         import os,sys
@@ -655,7 +655,7 @@ class FUNCovsdbtest:
 
         main.step( "Add port to ovs br-int and host go-online on the node " + str ( OVSDB2Ip ) )
         stepResult = main.OVSDB2.addPortToOvs( ovsname="br-int", ifaceId="00000000-0000-0000-0000-000000000002",
-                                               attachedMac="00:00:00:00:00:01", vmuuid="10000000-0000-0000-0000-000000000001" )
+                                               attachedMac="00:00:00:00:00:02", vmuuid="10000000-0000-0000-0000-000000000001" )
         utilities.assert_equals( expect=main.TRUE,
                                  actual=stepResult,
                                  onpass="Add port to ovs br-int and host go-online on the node " +\
@@ -763,3 +763,25 @@ class FUNCovsdbtest:
                                  actual=stepResult,
                                  onpass="Delete ip netns host on the ovsdb node 2 sucess",
                                  onfail="Delete ip netns host on the ovsdb node 2 failed" )
+
+        main.step( "Check onoscli devices openflow session is false " + str( OVSDB1Ip ) )
+        response = main.ONOScli1.devices()
+        if re.search( OVSDB1Ip, response ) and not re.search( "true", response ):
+            stepResult = main.TRUE
+        else:
+            stepResult = main.FALSE
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Check openflow session is false " + str( OVSDB1Ip ) + " sucess",
+                                 onfail="Check openflow session is false " + str( OVSDB1Ip ) + " failed" )
+
+        main.step( "Check onoscli devices have ovs " + str( OVSDB2Ip ) )
+        response = main.ONOScli1.devices()
+        if re.search( OVSDB2Ip, response ) and not re.search( "true", response ):
+            stepResult = main.TRUE
+        else:
+            stepResult = main.FALSE
+        utilities.assert_equals( expect=main.TRUE,
+                                 actual=stepResult,
+                                 onpass="Check openflow session is false " + str( OVSDB2Ip ) + " sucess",
+                                 onfail="Check openflow session is false " + str( OVSDB2Ip ) + " failed" )
