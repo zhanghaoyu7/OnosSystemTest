@@ -481,7 +481,7 @@ class FUNCovsdbtest:
 
         main.step( "Check ovsdb node 1 bridge br-int default flows on " + str( OVSDB1Ip ) )
         response = main.OVSDB1.dumpFlows( sw="br-int", protocols="OpenFlow13" )
-        if re.search( "cookie", response ):
+        if re.search( "actions=CONTROLLER", response ):
             stepResult = main.TRUE
         else:
             stepResult = main.FALSE
