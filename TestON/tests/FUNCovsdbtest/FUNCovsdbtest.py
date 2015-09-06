@@ -116,12 +116,12 @@ class FUNCovsdbtest:
                                  onpass="MCI successful",
                                  onfail="MCI failed" )
 
-        main.step( "Creating ONOS package" )
-        packageResult = main.ONOSbench.onosPackage()
-        utilities.assert_equals( expect=main.TRUE,
-                                     actual=packageResult,
-                                     onpass="Successfully created ONOS package",
-                                     onfail="Failed to create ONOS package" )
+        #main.step( "Creating ONOS package" )
+        #packageResult = main.ONOSbench.onosPackage()
+        #utilities.assert_equals( expect=main.TRUE,
+                                     #actual=packageResult,
+                                     #onpass="Successfully created ONOS package",
+                                     #onfail="Failed to create ONOS package" )
 
         main.step( "Installing ONOS package" )
         onosInstallResult = main.ONOSbench.onosInstall(

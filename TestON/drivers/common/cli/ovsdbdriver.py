@@ -334,12 +334,15 @@ class OvsdbDriver( CLI ):
         else:
             command = "sudo ip netns exec " + str( hostname ) +" ping -c 1 " + str( target )
         try:
-            handle = self.execute(
-                cmd=command,
-                timeout=10)
-            if re.search(',\s0\%\spacket\sloss', handle):
-                main.log.info(self.name + ": no packets lost, host is reachable")
-                return main.TRUE
+            for i in range(1,5):            
+                handle = self.execute(
+                    cmd=command,
+                    timeout=10)                
+                time.sleep(5)
+                if re.search(',\s0\%\spacket\sloss', handle):
+                    main.log.info(self.name + ": no packets lost, host is reachable")                    
+                    return main.TRUE
+                    break
             else:
                 main.log.info(self.name + ": packets lost, host is unreachable")
                 return main.FALSE
